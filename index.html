@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,23 +6,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Math Quiz!</title>
+    <style>
+      
+    </style>
 </head>
 <body>
-    <h1>Math for Kids!</h1>
+    <h1>Math Fun for Kids!</h1>
     <div class="difficulty-select">
         <button class="difficulty" data-difficulty="easy">Easy</button>
         <button class="difficulty" data-difficulty="medium">Medium</button>
         <button class="difficulty" data-difficulty="hard">Hard</button>
     </div>
     <div class="operation-select"></div>
-    <div>
-        <label>
-            <input type="checkbox" id="ten-sec-timer"> Enable 10 second timer
-        </label>
-        <label>
-            <input type="checkbox" id="five-sec-timer"> Enable 5 second timer
-        </label>
-    </div>
+    <label>
+        <input type="checkbox" id="timer-checkbox"> Enable Timer
+    </label>
     <div class="status"></div>
     <div class="question"></div>
     <div class="options"></div>
@@ -36,5 +35,6 @@
     <audio id="correct-sound" src="path/to/correct-sound.mp3"></audio>
     <audio id="wrong-sound" src="path/to/wrong-sound.mp3"></audio>
     <script src="script.js"></script>
+
 </body>
 </html>
