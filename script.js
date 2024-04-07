@@ -161,14 +161,26 @@ function generateQuestion() {
     }
 
     if (selectedOperation === 'Approximation') {
-        // Adjust the base number and divisor based on the difficulty for approximation questions
-        num1 = difficulty === 'easy' ? Math.floor(Math.random() * 400) + 100 : 
-               difficulty === 'medium' ? Math.floor(Math.random() * 800) + 200 :
-               Math.floor(Math.random() * 1200) + 300; // Hard difficulty
-        num2 = Math.floor(Math.random() * (difficulty === 'easy' ? 5 : 
-                difficulty == 'medium' ? 10 : 20))  + 2;
-        question = `Approximate: ${num1} / ${num2}`;
-        answer = Math.round((num1 / num2) / 10) * 10;
+                // Decide randomly between division and multiplication for approximation
+                const approxOperation = Math.random() < 0.5 ? 'Division' : 'Multiplication';
+
+                if (approxOperation === 'Division') {
+                    // Division: Adjust num1 and num2 based on difficulty
+                    num1 = difficulty === 'easy' ? Math.floor(Math.random() * 100) + 50 :
+                           difficulty === 'medium' ? Math.floor(Math.random() * 500) + 250 :
+                           Math.floor(Math.random() * 1000) + 500; // Hard
+                           num2 = Math.floor(Math.random() * (difficulty === 'easy' ? 5 : 
+                           difficulty == 'medium' ? 10 : 20))  + 2;                    question = `Approximate: ${num1} ÷ ${num2}`;
+                    answer = Math.round((num1 / num2) / 10) * 10; // Rounded to nearest 10
+                } else {
+                    // Multiplication: Simpler numbers for easy, more complex for hard
+                    num1 = difficulty === 'easy' ? Math.floor(Math.random() * 10) + 2 :
+                           difficulty === 'medium' ? Math.floor(Math.random() * 20) + 10 :
+                           Math.floor(Math.random() * 30) + 15; // Hard
+                           num2 = Math.floor(Math.random() * (difficulty === 'easy' ? 5 : 
+                           difficulty == 'medium' ? 10 : 20))  + 2;                    question = `Approximate: ${num1} × ${num2}`;
+                    answer = Math.round((num1 * num2) / 10) * 10; // Rounded to nearest 10
+                }    
 
         // Generate close options for approximation
         options = [answer];
