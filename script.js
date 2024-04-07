@@ -136,7 +136,7 @@ function generateApproximationQuestion() {
 
 // Generate a new question based on the operation
 function generateQuestion() {
-    let num1, num2, operation = selectedOperation;
+    let num1, num2, options, operation = selectedOperation;
 
     switch (difficulty) {
         case 'easy':
@@ -157,42 +157,30 @@ function generateQuestion() {
 
     if (selectedOperation === 'Mixed') {
         const operations = ['Addition', 'Subtraction', 'Multiplication', 'Division'];
-        selectedOperation = operations[Math.floor(Math.random() * operations.length)];
+        operation = operations[Math.floor(Math.random() * operations.length)];
     }
 
-    if (selectedOperation === 'Approximation') {
-                // Decide randomly between division and multiplication for approximation
-                const approxOperation = Math.random() < 0.5 ? 'Division' : 'Multiplication';
+    if (operation === 'Approximation') {
+        const approxOperation = Math.random() < 0.5 ? 'Division' : 'Multiplication';
 
-                if (approxOperation === 'Division') {
-                    // Division: Adjust num1 and num2 based on difficulty
-                    num1 = difficulty === 'easy' ? Math.floor(Math.random() * 100) + 50 :
-                           difficulty === 'medium' ? Math.floor(Math.random() * 500) + 250 :
-                           Math.floor(Math.random() * 1000) + 500; // Hard
-                           num2 = Math.floor(Math.random() * (difficulty === 'easy' ? 5 : 
-                           difficulty == 'medium' ? 10 : 20))  + 2;                    question = `Approximate: ${num1} ÷ ${num2}`;
-                    answer = Math.round((num1 / num2) / 10) * 10; // Rounded to nearest 10
-                } else {
-                    // Multiplication: Simpler numbers for easy, more complex for hard
-                    num1 = difficulty === 'easy' ? Math.floor(Math.random() * 10) + 2 :
-                           difficulty === 'medium' ? Math.floor(Math.random() * 20) + 10 :
-                           Math.floor(Math.random() * 30) + 15; // Hard
-                           num2 = Math.floor(Math.random() * (difficulty === 'easy' ? 5 : 
-                           difficulty == 'medium' ? 10 : 20))  + 2;                    question = `Approximate: ${num1} × ${num2}`;
-                    answer = Math.round((num1 * num2) / 10) * 10; // Rounded to nearest 10
-                }    
-
-        // Generate close options for approximation
-        options = [answer];
-        while (options.length < 4) {
-            let variation = (Math.floor(Math.random() * 10) + 1) * (Math.random() > 0.5 ? 10 : -10);
-            let newOption = answer + variation;
-            if (!options.includes(newOption)) {
-                options.push(newOption);
-            }
+        if (approxOperation === 'Division') {
+            num2 = difficulty === 'easy' ? Math.floor(Math.random() * 5) + 2 :
+                   difficulty === 'medium' ? Math.floor(Math.random() * 10) + 5 :
+                   Math.floor(Math.random() * 15) + 10;
+            let multiplier = Math.floor(Math.random() * 12) + 1;
+            num1 = num2 * multiplier;
+            question = `Approximate: ${num1} ÷ ${num2}`;
+        } else {
+            num1 = difficulty === 'easy' ? Math.floor(Math.random() * 10) + 2 :
+                   difficulty === 'medium' ? Math.floor(Math.random() * 20) + 10 :
+                   Math.floor(Math.random() * 30) + 15;
+            num2 = Math.floor(Math.random() * (difficulty === 'easy' ? 5 : 10)) + 2;
+            question = `Approximate: ${num1} × ${num2}`;
         }
+        answer = approxOperation === 'Division' ? num1 / num2 : num1 * num2;
+        answer = Math.round(answer / 10) * 10; // Rounded to nearest 10 for approximation
     } else {
-        switch (selectedOperation) {
+        switch (operation) {
             case 'Addition':
                 question = `${num1} + ${num2}`;
                 answer = num1 + num2;
@@ -206,25 +194,54 @@ function generateQuestion() {
                 answer = num1 * num2;
                 break;
             case 'Division':
-                // For division, make sure we don't divide by zero
-                num2 = num2 === 0 ? 1 : num2;
+                num2 = num2 === 0 ? 1 : num2; // Avoid division by zero
+                let multiplier = Math.floor(Math.random() * 10) + 1;
+                num1 = num2 * multiplier; // Ensures whole number answer and num1 > num2
                 question = `${num1} ÷ ${num2}`;
-                answer = Math.floor(num1 / num2);
+                answer = num1 / num2;
                 break;
         }
     }
 
+    // Option generation for approximation moved here to use the standard method
+    options = [answer];
+    while (options.length < 4) {
+        let variation = Math.floor(Math.random() * 3) + 1; // Ensuring options are varied but plausible
+        let option = answer + (Math.random() > 0.5 ? variation : -variation);
+        // Ensure unique options and positive answers
+        if (!options.includes(option) && option > 0) {
+            options.push(option);
+        }
+    }
+
+    // Shuffle options
+    options = options.sort(() => Math.random() - 0.5);
+
     questionElement.textContent = question + " = ?";
     quizQuestions[currentQuestion] = { question: questionElement.textContent, answer };
-    generateOptions(answer);
+
+    // Displaying options
+    optionsElement.innerHTML = '';
+    options.forEach(option => {
+        const optionButton = document.createElement('button');
+        optionButton.classList.add('option');
+        optionButton.textContent = option;
+        optionButton.addEventListener('click', () => selectOption(option, answer));
+        optionsElement.appendChild(optionButton);
+    });
+
     updateStatus();
 
+    // Timer setup based on checkbox selection
     if (tenSecTimerCheckbox.checked) {
         startTimer(10);
     } else if (fiveSecTimerCheckbox.checked) {
         startTimer(5);
     }
 }
+
+// Ensure the rest of the helper functions like selectOption, updateStatus, and startTimer are defined and properly integrated.
+    
 
 // Select an answer option
 function selectOption(selectedAnswer, correctAnswer) {
