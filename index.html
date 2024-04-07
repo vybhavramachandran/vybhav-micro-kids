@@ -8,12 +8,12 @@
 </head>
 <body>
     <h1>Math Fun for Kids!</h1>
-    <div class="difficulty-select">
+    <div class="operation-select"></div>
+    <div class="difficulty-select" style="display: none;">
         <button class="difficulty" data-difficulty="easy">Easy</button>
         <button class="difficulty" data-difficulty="medium">Medium</button>
         <button class="difficulty" data-difficulty="hard">Hard</button>
     </div>
-    <div class="operation-select"></div>
     <div>
         <label>
             <input type="checkbox" id="ten-sec-timer"> Enable 10 second timer
@@ -33,6 +33,7 @@
         <ul class="results-list"></ul>
         <button class="play-again">Play Again</button>
     </div>
+    <button id="reset-quiz-button" style="display: none;">Reset Quiz</button>
     <audio id="correct-sound" src="path/to/correct-sound.mp3"></audio>
     <audio id="wrong-sound" src="path/to/wrong-sound.mp3"></audio>
     <script src="script.js"></script>
