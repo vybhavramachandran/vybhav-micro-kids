@@ -1,4 +1,3 @@
-
 const difficultySelectElement = document.querySelector('.difficulty-select');
 const operationSelectElement = document.querySelector('.operation-select');
 const statusElement = document.querySelector('.status');
@@ -6,7 +5,8 @@ const questionElement = document.querySelector('.question');
 const optionsElement = document.querySelector('.options');
 const timerElement = document.querySelector('.timer');
 const resultElement = document.querySelector('.result');
-const timerCheckbox = document.getElementById('timer-checkbox');
+const tenSecTimerCheckbox = document.getElementById('ten-sec-timer');
+const fiveSecTimerCheckbox = document.getElementById('five-sec-timer');
 const resultsContainer = document.querySelector('.results-container');
 const resultsList = document.querySelector('.results-list');
 const playAgainButton = document.querySelector('.play-again');
@@ -27,9 +27,10 @@ function showOperationSelection() {
         { text: 'Subtraction ➖', value: 'Subtraction' },
         { text: 'Multiplication ✖️', value: 'Multiplication' },
         { text: 'Division ➗', value: 'Division' },
-        { text: 'Mixed 🔀', value: 'Mixed' }
+        { text: 'Mixed 🔀', value: 'Mixed' },
+        { text: 'Approximation 🧮', value: 'Approximation' }
     ];
-    operationSelectElement.innerHTML = ''; // Clear previous operations
+    operationSelectElement.innerHTML = '';
     operations.forEach(operation => {
         const button = document.createElement('button');
         button.textContent = operation.text;
@@ -70,7 +71,6 @@ function startRound() {
     score = 0;
     quizQuestions = [];
     difficultySelectElement.style.display = 'none';
-    timerCheckbox.style.display = 'none';
     questionElement.style.display = 'block';
     optionsElement.style.display = 'block';
     timerElement.style.display = 'block';
@@ -81,7 +81,7 @@ function startRound() {
 function nextQuestion() {
     if (currentQuestion < 20) {
         generateQuestion();
-        if (timerCheckbox.checked) {
+        if (tenSecTimerCheckbox.checked || fiveSecTimerCheckbox.checked) {
             startTimer();
         }
     } else {
@@ -90,7 +90,7 @@ function nextQuestion() {
 }
 
 function generateQuestion() {
-    let num1, num2;
+    let num1, num2, operation = selectedOperation;
 
     switch (difficulty) {
         case 'easy':
@@ -107,78 +107,58 @@ function generateQuestion() {
             break;
     }
 
-    let operation = selectedOperation;
-    if (selectedOperation === 'Mixed') {
+    if (operation === 'Mixed') {
         const operations = ['Addition', 'Subtraction', 'Multiplication', 'Division'];
         operation = operations[Math.floor(Math.random() * operations.length)];
     }
 
-    let question;
-    let answer;
-
-    switch (operation) {
-        case 'Addition':
-            question = `${num1} + ${num2} = ?`;
-            answer = num1 + num2;
-            break;
-        case 'Subtraction':
-            question = `${num1} - ${num2} = ?`;
-            answer = num1 - num2;
-            break;
-        case 'Multiplication':
-            question = `${num1} × ${num2} = ?`;
-            answer = num1 * num2;
-            break;
-        case 'Division':
-            // Ensure division results in an integer
-            num1 = num1 * num2;
-            question = `${num1} ÷ ${num2} = ?`;
-            answer = num1 / num2;
-            break;
-    }
-
-    quizQuestions.push({ question, answer, operation });
-    questionElement.textContent = question;
-    generateOptions(answer);
-    updateStatus();
-}
-
-function generateOptions(answer) {
-    const options = [answer];
-    while (options.length < 4) {
-        let option;
-        switch (difficulty) {
-            case 'easy':
-                option = Math.floor(Math.random() * 20) + 1;
+    let question, answer;
+    if (operation === 'Approximation') {
+        num1 = Math.floor(Math.random() * 5000) + 1000;
+        num2 = Math.floor(Math.random() * 90) + 10;
+        question = `${num1} / ${num2}`;
+        answer = Math.round(num1 / num2 / 10) * 10;
+    } else {
+        switch (operation) {
+            case 'Addition':
+                question = `${num1} + ${num2}`;
+                answer = num1 + num2;
                 break;
-            case 'medium':
-                option = Math.floor(Math.random() * 100) + 1;
+            case 'Subtraction':
+                question = `${num1} - ${num2}`;
+                answer = num1 - num2;
                 break;
-            case 'hard':
-                option = Math.floor(Math.random() * 200) + 1;
+            case 'Multiplication':
+                question = `${num1} × ${num2}`;
+                answer = num1 * num2;
+                break;
+            case 'Division':
+                question = `${num1} ÷ ${num2}`;
+                answer = Math.floor(num1 / num2);
                 break;
         }
-        if (!options.includes(option)) {
-            options.push(option);
-        }
     }
-    options.sort(() => Math.random() - 0.5);
 
+    const approximateAnswers = [answer - 10, answer, answer + 10, answer + 20];
+    const shuffledAnswers = approximateAnswers.sort(() => 0.5 - Math.random());
+    
+    questionElement.textContent = question + " = ?";
     optionsElement.innerHTML = '';
-    options.forEach(option => {
-        const button = document.createElement('button');
-        button.textContent = option;
-        button.classList.add('option');
-        button.addEventListener('click', () => selectOption(option, answer));
-        optionsElement.appendChild(button);
+    shuffledAnswers.forEach(opt => {
+        const optionButton = document.createElement('button');
+        optionButton.classList.add('option');
+        optionButton.textContent = operation === 'Approximation' ? `Approximately ${opt}` : opt;
+        optionButton.addEventListener('click', () => selectOption(opt, answer));
+        optionsElement.appendChild(optionButton);
     });
+
+    updateStatus();
 }
 
 function selectOption(selectedAnswer, correctAnswer) {
     clearInterval(timer);
-    quizQuestions[currentQuestion].selectedAnswer = selectedAnswer;
-
-    if (selectedAnswer === correctAnswer) {
+    const isCorrect = selectedOperation === 'Approximation' ? Math.abs(selectedAnswer - correctAnswer) <= 10 : selectedAnswer === correctAnswer;
+    if (isCorrect) {
         score++;
         feedbackElement.textContent = 'Correct!';
         feedbackElement.classList.add('correct-feedback');
@@ -198,7 +178,7 @@ function selectOption(selectedAnswer, correctAnswer) {
 }
 
 function startTimer() {
-    let time = 10;
+    let time = tenSecTimerCheckbox.checked ? 10 : 5;
     timerElement.textContent = time;
     timer = setInterval(() => {
         time--;
@@ -221,6 +201,7 @@ function showResult() {
     optionsElement.style.display = 'none';
     timerElement.style.display = 'none';
     statusElement.style.display = 'none';
+    resultsContainer.style.display = 'block';
 
     resultsList.innerHTML = '';
     quizQuestions.forEach((question, index) => {
@@ -237,35 +218,16 @@ function showResult() {
         }
         resultsList.appendChild(listItem);
     });
-
-    resultsContainer.style.display = 'block';
 }
 
 function resetQuiz() {
     resultsContainer.style.display = 'none';
     resultElement.textContent = '';
     showOperationSelection();
-    timerCheckbox.style.display = 'inline';
     questionElement.style.display = 'none';
     optionsElement.style.display = 'none';
     timerElement.style.display = 'none';
     statusElement.style.display = 'none';
+    tenSecTimerCheckbox.checked = false;
+    fiveSecTimerCheckbox.checked = false;
 }
-
-const resetQuizButton = document.createElement('button');
-resetQuizButton.textContent = 'Reset Quiz';
-resetQuizButton.id = 'reset-quiz-button';
-resetQuizButton.style.position = 'fixed'; // Position the button as needed
-resetQuizButton.style.bottom = '20px';
-resetQuizButton.style.right = '20px';
-document.body.appendChild(resetQuizButton);
-
-resetQuizButton.addEventListener('click', function() {
-    const confirmReset = confirm('Do you really want to reset the quiz and go back to the quiz selection screen?');
-    if (confirmReset) {
-        resetQuiz();
-        showOperationSelection(); // Make sure this shows the initial screen as intended
-        timerCheckbox.style.display = 'inline-block'; // Make sure the timer checkbox is visible again
-        // Reset any other elements or states as needed
-    }
-});
