@@ -1,27 +1,27 @@
-body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    background-color: #f0f8ff;
-    margin: 0;
-    padding: 20px;
-}
-h1 {
-    color: #1e90ff;
-    font-size: 3rem;
-    margin-bottom: 1.5rem;
-}
-.question, .result, .results-title {
-    font-size: 2.5rem;
-    margin-bottom: 1.5rem;
-}
-.options, .operation-select, .difficulty-select {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-}
-.option, .operation, .difficulty, .timer, .status, .results-list, .play-again, .feedback {
+ body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #1e90ff;
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+        }
+        .question {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .options {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+       .option {
     font-size: 1.5rem;
     padding: 1rem 2rem;
     background-color: #87ceeb;
@@ -30,51 +30,99 @@ h1 {
     cursor: pointer;
     flex: 1 1 200px;
     max-width: 300px;
-    margin: 10px;
-}
-.option:hover, .operation:hover, .difficulty:hover, .play-again:hover {
-    background-color: #00bfff;
-}
-.timer, .status, .feedback {
-    margin-bottom: 1.5rem;
-}
-.results-container {
-    text-align: left;
-    margin: 0 auto;
-    max-width: 600px;
-}
-.results-title {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-}
-.results-list {
-    list-style-type: none;
-    padding: 0;
-    font-size: 1.5rem;
-}
-.results-item {
-    margin-bottom: 1rem;
-}
-.correct {
-    color: green;
-}
-.wrong {
-    color: red;
-}
-.play-again {
-    background-color: #1e90ff;
-    color: white;
-    margin-top: 1.5rem;
-}
-.correct-feedback {
-    color: green;
-}
-.wrong-feedback {
-    color: red;
+    margin: 10px; /* Add spacing between options */
 }
 
-@media screen and (max-width: 600px) {
-    h1, .question, .result, .results-title, .option, .operation, .difficulty, .timer, .status, .results-list, .play-again, .feedback {
-        font-size: 1.2rem;
-    }
-}
+        .option:hover {
+            background-color: #00bfff;
+        }
+        .timer {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .result {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .operation-select, .difficulty-select {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .operation, .difficulty {
+            font-size: 1.5rem;
+            padding: 1rem 2rem;
+            background-color: #87ceeb;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            flex: 1 1 200px;
+            max-width: 300px;
+        }
+        .operation:hover, .difficulty:hover {
+            background-color: #00bfff;
+        }
+        .status {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .results-container {
+            text-align: left;
+            margin: 0 auto;
+            max-width: 600px;
+        }
+        .results-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .results-list {
+            list-style-type: none;
+            padding: 0;
+            font-size: 1.5rem;
+        }
+        .results-item {
+            margin-bottom: 1rem;
+        }
+        .correct {
+            color: green;
+        }
+        .wrong {
+            color: red;
+        }
+        .play-again {
+            font-size: 1.5rem;
+            padding: 1rem 2rem;
+            background-color: #1e90ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 1.5rem;
+        }
+        .play-again:hover {
+            background-color: #00bfff;
+        }
+        .feedback {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .correct-feedback {
+            color: green;
+        }
+        .wrong-feedback {
+            color: red;
+        }
+        
+        @media screen and (max-width: 600px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            .question, .result, .results-title {
+                font-size: 2rem;
+            }
+            .option, .operation, .difficulty, .timer, .status, .results-list, .play-again, .feedback {
+                font-size: 1.2rem;
+            }
+        }
